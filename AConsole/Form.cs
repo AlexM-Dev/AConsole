@@ -10,6 +10,7 @@ using AConsole.Extensions;
 
 namespace AConsole {
     public class Form : Control {
+        private ClearConsole clr = new ClearConsole();
         public List<Control> Controls { get; set; } =
             new List<Control>();
         public bool Running { get; set; } = false;
@@ -51,6 +52,12 @@ namespace AConsole {
                             break;
                         case ConsoleKey.LeftArrow:
                             xMove(grid, current, false);
+                            break;
+                        case ConsoleKey.DownArrow:
+                            yMove(grid, current, true);
+                            break;
+                        case ConsoleKey.UpArrow:
+                            yMove(grid, current, false);
                             break;
                         default:
                             current.OnKeyPress(new KeyEventArgs(cInfo));
@@ -94,6 +101,39 @@ namespace AConsole {
                 else break;
             }
         }
+        private void yMove(Control[,] grid, Control current, bool up = true) {
+            int x = currentIndex.X, y = 1;
+            Location l = null;
+
+            // While the program has not found a location.
+            while (l == null) {
+                // Get the dimensions of the grid.
+                int xlen = grid.GetLength(0),
+                    ylen = grid.GetLength(1);
+                int diff = currentIndex.Y + (up ? y : -y);
+
+                // If it's a valid point: i.e.
+                // - if it's within the grid,
+                // - if it's a valid control,
+                // - if it's enabled.
+                if ((up ? (diff < ylen) : (diff >= 0))
+                    && grid[y, diff] != null &&
+                    grid[y, diff].Enabled) {
+                    // Create new location from the control index.
+                    l = new Location(currentIndex.X, diff);
+
+                    // Raise lost focus event.
+                    current.OnLostFocus();
+                    // Set current index to the new location.
+                    currentIndex = l;
+                    // Raise got focus event.
+                    grid[l.X, l.Y].OnFocus();
+                    break;
+                }
+                if ((up ? (diff < ylen) : (diff >= 0))) y++;
+                else break;
+            }
+        }
         public Form() {
             Init();
         }
@@ -111,7 +151,7 @@ namespace AConsole {
             Console.CursorVisible = false;
         }
         private void Clear() {
-            Console.Clear();
+            clr.Clear();
         }
     }
 }

@@ -47,6 +47,7 @@
     <Compile Include="Drawing\Location.cs" />
     <Compile Include="Events\Size.cs" />
     <Compile Include="Events\KeyEventArgs.cs" />
+    <Compile Include="Extensions\ClearConsole.cs" />
     <Compile Include="Extensions\ExtendedConsole.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Form.cs" />
