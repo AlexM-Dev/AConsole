@@ -38,33 +38,37 @@ namespace AConsole {
         public override void Show() {
             Running = true;
             Draw();
+            DateTime lastPressedTime = DateTime.MinValue;
             while (Running) {
                 // Get user info.
                 ConsoleKeyInfo cInfo = Console.ReadKey(true);
-
-                // Bidirectional index.
-                Control[,] grid = ExtendedConsole.GetGrid(Controls);
-                Control current = grid[currentIndex.X, currentIndex.Y];
-                if (!current.RequireArrows) {
-                    switch (cInfo.Key) {
-                        case ConsoleKey.RightArrow:
-                            xMove(grid, current, true);
-                            break;
-                        case ConsoleKey.LeftArrow:
-                            xMove(grid, current, false);
-                            break;
-                        case ConsoleKey.DownArrow:
-                            yMove(grid, current, true);
-                            break;
-                        case ConsoleKey.UpArrow:
-                            yMove(grid, current, false);
-                            break;
-                        default:
-                            current.OnKeyPress(new KeyEventArgs(cInfo));
-                            break;
-                    }
-                } else current.OnKeyPress(new KeyEventArgs(cInfo));
-                Draw();
+                if (DateTime.Now > 
+                    lastPressedTime.AddMilliseconds(MinDuration)) {
+                    // Bidirectional index.
+                    Control[,] grid = ExtendedConsole.GetGrid(Controls);
+                    Control current = grid[currentIndex.X, currentIndex.Y];
+                    if (!current.RequireArrows) {
+                        switch (cInfo.Key) {
+                            case ConsoleKey.RightArrow:
+                                xMove(grid, current, true);
+                                break;
+                            case ConsoleKey.LeftArrow:
+                                xMove(grid, current, false);
+                                break;
+                            case ConsoleKey.DownArrow:
+                                yMove(grid, current, true);
+                                break;
+                            case ConsoleKey.UpArrow:
+                                yMove(grid, current, false);
+                                break;
+                            default:
+                                current.OnKeyPress(new KeyEventArgs(cInfo));
+                                break;
+                        }
+                    } else current.OnKeyPress(new KeyEventArgs(cInfo));
+                    Draw();
+                }
+                lastPressedTime = DateTime.Now;
             }
         }
 
