@@ -87,7 +87,7 @@ namespace AConsole {
                     && grid[diff, y] != null &&
                     grid[diff, y].Enabled) {
                     // Create new location from the control index.
-                    l = new Location(diff, currentIndex.Y);
+                    l = new Location(diff, y);
 
                     // Raise lost focus event.
                     current.OnLostFocus();
@@ -117,10 +117,10 @@ namespace AConsole {
                 // - if it's a valid control,
                 // - if it's enabled.
                 if ((up ? (diff < ylen) : (diff >= 0))
-                    && grid[y, diff] != null &&
-                    grid[y, diff].Enabled) {
+                    && grid[x, diff] != null &&
+                    grid[x, diff].Enabled) {
                     // Create new location from the control index.
-                    l = new Location(currentIndex.X, diff);
+                    l = new Location(x, diff);
 
                     // Raise lost focus event.
                     current.OnLostFocus();
@@ -150,8 +150,6 @@ namespace AConsole {
             // Hide the caret, as this is Console forms.
             Console.CursorVisible = false;
         }
-        private void Clear() {
-            clr.Clear();
-        }
+        private void Clear() => clr.Clear();
     }
 }

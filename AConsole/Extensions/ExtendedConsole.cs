@@ -21,8 +21,8 @@ namespace AConsole.Extensions {
         public static Control[,] GetGrid(List<Control> controls) {
             int maxX = 0, maxY = 0;
             foreach (Control c in controls) {
-                if (c.Location.X > maxX) maxX = c.Location.X;
-                if (c.Location.Y > maxY) maxY = c.Location.Y;
+                if (c.Location.X > maxX) maxX = c.Index.X + 1;
+                if (c.Location.Y > maxY) maxY = c.Index.Y + 1;
             }
             Control[,] grid = new Control[maxX + 1, maxY + 1];
             foreach (Control c in controls)
