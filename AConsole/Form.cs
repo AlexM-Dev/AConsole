@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AConsole.Extensions;
 
 namespace AConsole {
     public class Form : Control {
@@ -14,14 +15,15 @@ namespace AConsole {
         public bool Running { get; set; } = false;
         public int MinDuration { get; set; } = 100;
 
-        private int currentIndex { get; set; } = 0;
+        private Location currentIndex { get; set; } = new Location(0, 0);
         private new Size Size { get; set; }
         private new Location Location { get; set; }
 
         public override void Draw() {
             Clear();
 
-            Controls = Controls.OrderBy(control => control.Index).ToList();
+            // Controls = Controls.OrderBy((control) => 
+            //     control.Index).ToList();
             foreach (Control c in Controls) {
                 c.Parent = this;
                 c.Draw();
@@ -38,30 +40,60 @@ namespace AConsole {
             while (Running) {
                 // Get user info.
                 ConsoleKeyInfo cInfo = Console.ReadKey(true);
-                Console.Title = currentIndex.ToString();
-                if (currentIndex > Controls.Count - 1) continue;
-                switch (cInfo.Key) {
-                    case ConsoleKey.UpArrow:
-                        if (currentIndex - 1 >= 0 &&
-                            Controls[currentIndex - 1].Enabled) currentIndex--;
-                        Controls[currentIndex].OnFocus();
-                        break;
-                    case ConsoleKey.DownArrow:
-                        if (currentIndex + 1 < Controls.Count &&
-                            Controls[currentIndex + 1].Enabled) currentIndex++;
-                        Controls[currentIndex].OnFocus();
-                        break;
-                    default:
-                        if (currentIndex < Controls.Count &&
-                            Controls[currentIndex].Enabled)
-                            Controls[currentIndex]
-                                .OnKeyPress(new KeyEventArgs(cInfo));
-                        break;
-                }
+
+                // Bidirectional index.
+                Control[,] grid = ExtendedConsole.GetGrid(Controls);
+                Control current = grid[currentIndex.X, currentIndex.Y];
+                if (!current.RequireArrows) {
+                    switch (cInfo.Key) {
+                        case ConsoleKey.RightArrow:
+                            xMove(grid, current, true);
+                            break;
+                        case ConsoleKey.LeftArrow:
+                            xMove(grid, current, false);
+                            break;
+                        default:
+                            current.OnKeyPress(new KeyEventArgs(cInfo));
+                            break;
+                    }
+                } else current.OnKeyPress(new KeyEventArgs(cInfo));
                 Draw();
             }
         }
 
+        private void xMove(Control[,] grid, Control current, bool up = true) {
+            int x = 1, y = currentIndex.Y;
+            Location l = null;
+
+            // While the program has not found a location.
+            while (l == null) {
+                // Get the dimensions of the grid.
+                int xlen = grid.GetLength(0),
+                    ylen = grid.GetLength(1);
+                int diff = currentIndex.X + (up ? x : -x);
+
+                // If it's a valid point: i.e.
+                // - if it's within the grid,
+                // - if it's a valid control,
+                // - if it's enabled.
+                if ((up ? (diff < xlen) : (diff >= 0))
+                    && grid[diff, y] != null &&
+                    grid[diff, y].Enabled) {
+                    // Create new location from the control index.
+                    l = new Location(diff, currentIndex.Y);
+
+                    // Raise lost focus event.
+                    current.OnLostFocus();
+                    // Set current index to the new location.
+                    currentIndex = l;
+                    // Raise got focus event.
+                    grid[l.X, l.Y].OnFocus();
+                    break;
+                }
+                if ((up ? (diff < xlen) : (diff >= 0))) x++;
+                else break;
+            }
+        }
         public Form() {
             Init();
         }
@@ -70,7 +102,6 @@ namespace AConsole {
 
             Init();
         }
-
         private void Init() {
             // Remove the scrollbars.
             Console.SetBufferSize(Console.WindowWidth,
@@ -79,7 +110,6 @@ namespace AConsole {
             // Hide the caret, as this is Console forms.
             Console.CursorVisible = false;
         }
-
         private void Clear() {
             Console.Clear();
         }

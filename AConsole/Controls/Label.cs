@@ -10,7 +10,7 @@ namespace AConsole.Controls {
     public class Label : Control {
         public override void Draw() {
             if (Visible) {
-                Action a = () => {
+                void a() {
                     var cList = Text.ToCharArray().ToList()
                                 .ChunkBy(Size.Width);
                     for (int i = 0; i < cList.Count; i++) {
@@ -20,7 +20,7 @@ namespace AConsole.Controls {
                                 ++Console.CursorTop);
                         }
                     }
-                };
+                }
                 ExtendedConsole.ActionAt(a, Location);
             }
         }
