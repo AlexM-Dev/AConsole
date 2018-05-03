@@ -56,11 +56,14 @@ namespace AConsole.Extensions {
 
         public void Clear() {
             int hWrittenChars = 0;
-            CONSOLE_SCREEN_BUFFER_INFO strConsoleInfo = new CONSOLE_SCREEN_BUFFER_INFO();
+            CONSOLE_SCREEN_BUFFER_INFO strConsoleInfo = 
+                new CONSOLE_SCREEN_BUFFER_INFO();
             COORD Home;
             Home.x = Home.y = 0;
             GetConsoleScreenBufferInfo(hConsoleHandle, ref strConsoleInfo);
-            FillConsoleOutputCharacter(hConsoleHandle, EMPTY, strConsoleInfo.dwSize.x * strConsoleInfo.dwSize.y, Home, ref hWrittenChars);
+            FillConsoleOutputCharacter(hConsoleHandle, EMPTY,
+                strConsoleInfo.dwSize.x * strConsoleInfo.dwSize.y,
+                Home, ref hWrittenChars);
             SetConsoleCursorPosition(hConsoleHandle, Home);
         }
     }

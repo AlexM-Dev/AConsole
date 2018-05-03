@@ -42,8 +42,10 @@
   <ItemGroup>
     <Compile Include="Control.cs" />
     <Compile Include="Controls\Border.cs" />
+    <Compile Include="Controls\Button.cs" />
     <Compile Include="Controls\Label.cs" />
     <Compile Include="Drawing\BorderStyle.cs" />
+    <Compile Include="Drawing\ConsoleColorPair.cs" />
     <Compile Include="Drawing\Location.cs" />
     <Compile Include="Events\Size.cs" />
     <Compile Include="Events\KeyEventArgs.cs" />

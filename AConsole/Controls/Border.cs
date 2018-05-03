@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace AConsole.Controls {
     public class Border : Control {
-        public BorderStyle BorderStyle { get; set; } = BorderStyle.Single;
         public override void Draw() {
             if (Visible) {
                 Action a = () => {

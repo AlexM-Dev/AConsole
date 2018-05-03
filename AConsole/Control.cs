@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace AConsole {
     public abstract class Control {
         /* Properties */
+        public BorderStyle BorderStyle { get; set; } = BorderStyle.Single;
         public string Name { get; set; }
         public string Text { get; set; }
         public Location Location { get; set; }

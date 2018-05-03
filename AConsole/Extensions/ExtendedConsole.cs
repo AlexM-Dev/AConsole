@@ -29,5 +29,16 @@ namespace AConsole.Extensions {
                 grid[c.Index.X, c.Index.Y] = c;
             return grid;
         }
+        public static void BoxTextDraw(string text, Size s, Location l) {
+            var cList = text.ToCharArray().ToList()
+                        .ChunkBy(s.Width - 2);
+            for (int i = 0; i < cList.Count; i++) {
+                if (i < s.Height - 2) {
+                    Console.SetCursorPosition(l.X + 1,
+                        ++Console.CursorTop);
+                    Console.Write(new string(cList[i].ToArray()));
+                }
+            }
+        }
     }
 }
